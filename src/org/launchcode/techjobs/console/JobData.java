@@ -7,9 +7,7 @@ import org.apache.commons.csv.CSVRecord;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by LaunchCode
@@ -32,28 +30,31 @@ public class JobData {
 
         // load data, if not already loaded
         loadData();
-
         ArrayList<String> values = new ArrayList<>();
-
+        ArrayList<String> uniqueValues = new ArrayList<>();
+        HashMap<String, String> mapVal = new HashMap<>();
         for (HashMap<String, String> row : allJobs) {
             String aValue = row.get(field);
 
             if (!values.contains(aValue)) {
+                mapVal.put(aValue.toLowerCase(),aValue);
                 values.add(aValue);
             }
         }
+        uniqueValues.addAll(mapVal.values());
 
-        return values;
+        //return values;
+        return uniqueValues;
     }
 
-    public static ArrayList<HashMap<String, String>> findAll() {
+
+        public static ArrayList<HashMap<String, String>> findAll() {
 
         // load data, if not already loaded
         loadData();
 
         return allJobs;
     }
-
     /**
      * Returns results of search the jobs data by key/value, using
      * inclusion of the search term.
@@ -76,12 +77,34 @@ public class JobData {
 
             String aValue = row.get(column);
 
-            if (aValue.contains(value)) {
+            if (aValue.toLowerCase().contains(value.toLowerCase())) {
                 jobs.add(row);
             }
         }
 
         return jobs;
+    }
+
+
+    public static ArrayList<HashMap<String,String>> findbyValue(String val) {
+
+        loadData();
+        ArrayList<HashMap<String, String>> job = new ArrayList<>();
+        for (HashMap<String, String> map : allJobs) {
+
+            for (String k : map.keySet()) {
+
+                    if (map.get(k).toLowerCase().contains(val.toLowerCase())) {
+                        job.add(map);
+                        break;
+                    }
+
+
+            }
+
+            //return job;
+        }
+        return job;
     }
 
     /**
